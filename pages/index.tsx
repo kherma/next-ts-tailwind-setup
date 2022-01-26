@@ -28,8 +28,8 @@ const ConditionalTW = styled.div<{ isRed: boolean }>`
 
 const Home: NextPage = () => {
   return (
-    <div className='w-screen h-screen flex items-center justify-center flex-col gap-4'>
-      <h1 className='text-5xl bg-black text-white'>Hello Tailwind</h1>
+    <div className='flex flex-col gap-4 justify-center items-center w-screen h-screen'>
+      <h1 className='text-5xl text-white bg-black'>Hello Tailwind</h1>
       <StyledTitle>Hello Styled-component</StyledTitle>
       <TailwindStylesTitle>Hello Twin Macro</TailwindStylesTitle>
       <ConditionalTW isRed={true}>Conticional TW</ConditionalTW>
