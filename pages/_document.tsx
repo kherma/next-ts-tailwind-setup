@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement } from "react";
 import Document, {
   Html,
   Head,
@@ -6,8 +6,8 @@ import Document, {
   NextScript,
   DocumentInitialProps,
   DocumentContext,
-} from 'next/document';
-import { ServerStyleSheet } from 'styled-components';
+} from "next/document";
+import { ServerStyleSheet } from "styled-components";
 
 export default class MyDocument extends Document {
   static async getInitialProps(
@@ -39,11 +39,11 @@ export default class MyDocument extends Document {
   }
   render(): ReactElement {
     return (
-      <Html lang='en'>
+      <Html lang="en">
         <Head>
           <link
-            href='https://fonts.googleapis.com/css2?family=Neonderthaw&display=swap'
-            rel='stylesheet'
+            href="https://fonts.googleapis.com/css2?family=Neonderthaw&display=swap"
+            rel="stylesheet"
           />
         </Head>
         <body>

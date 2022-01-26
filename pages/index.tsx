@@ -1,5 +1,5 @@
-import type { NextPage } from 'next';
-import tw, { styled } from 'twin.macro';
+import type { NextPage } from "next";
+import tw, { styled } from "twin.macro";
 
 const StyledTitle = styled.h1`
   color: red;
@@ -28,8 +28,8 @@ const ConditionalTW = styled.div<{ isRed: boolean }>`
 
 const Home: NextPage = () => {
   return (
-    <div className='flex flex-col gap-4 justify-center items-center w-screen h-screen'>
-      <h1 className='text-5xl text-white bg-black'>Hello Tailwind</h1>
+    <div className="flex flex-col gap-4 justify-center items-center w-screen h-screen">
+      <h1 className="text-5xl text-white bg-black">Hello Tailwind</h1>
       <StyledTitle>Hello Styled-component</StyledTitle>
       <TailwindStylesTitle>Hello Twin Macro</TailwindStylesTitle>
       <ConditionalTW isRed={true}>Conticional TW</ConditionalTW>

@@ -1,5 +1,9 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:tailwindcss/recommended"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:tailwindcss/recommended",
+    "prettier"
+  ],
   "rules": {
     "no-unused-vars": "error",
     "tailwindcss/classnames-order": "error",
