@@ -40,267 +40,7 @@ module.exports = {
 
 ## Check if it Works
 
-# 4. Install Styled components
-
-## Install SD & babel plugin
-
-```
-npm i styled-components
-npm i @types/styled-components --save-dev
-
-npm i -D babel-plugin-styled-components
-```
-
-## .babelrc
-
-```json
-{
-  "presets": ["next/babel"],
-  "plugins": [["styled-components", { "ssr": true, "displayName": true }]]
-}
-```
-
-## Add \_document.tsx
-
-### Links:
-
-#### https://nextjs.org/docs/advanced-features/custom-document
-
-#### https://dev.to/rffaguiar/nextjs-typescript-styled-components-1i3m
-
-```tsx
-import React, { ReactElement } from "react";
-import Document, {
-  Html,
-  Head,
-  Main,
-  NextScript,
-  DocumentInitialProps,
-  DocumentContext,
-} from "next/document";
-import { ServerStyleSheet } from "styled-components";
-
-export default class MyDocument extends Document {
-  static async getInitialProps(
-    ctx: DocumentContext
-  ): Promise<DocumentInitialProps> {
-    const sheet = new ServerStyleSheet();
-    const originalRenderPage = ctx.renderPage;
-
-    try {
-      ctx.renderPage = () =>
-        originalRenderPage({
-          enhanceApp: (App) => (props) =>
-            sheet.collectStyles(<App {...props} />),
-        });
-
-      const initialProps = await Document.getInitialProps(ctx);
-      return {
-        ...initialProps,
-        styles: (
-          <>
-            {initialProps.styles}
-            {sheet.getStyleElement()}
-          </>
-        ),
-      };
-    } finally {
-      sheet.seal();
-    }
-  }
-  render(): ReactElement {
-    return (
-      <Html lang="en">
-        <Head>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Neonderthaw&display=swap"
-            rel="stylesheet"
-          />
-        </Head>
-        <body>
-          <Main />
-          <NextScript />
-        </body>
-      </Html>
-    );
-  }
-}
-```
-
-# 5. Add twin.macro
-
-### Links:
-
-#### https://github.com/ben-rogerson/twin.examples/tree/master/next-styled-components
-
-```
-npm i twin.macro
-npm i babel-plugin-macros
-npm i @types/babel-plugin-macros --save-dev
-```
-
-### Add babel-plugin-macros.config.js
-
-```js
-module.exports = {
-  twin: {
-    preset: "styled-components",
-    autoCssProp: false,
-  },
-};
-```
-
-### Update .babelrc
-
-```json
-{
-  "presets": [["next/babel", { "preset-react": { "runtime": "automatic" } }]],
-  "plugins": [
-    "babel-plugin-macros",
-    ["babel-plugin-styled-components", { "ssr": true }]
-  ]
-}
-```
-
-#### VSCODE extenstion: Tailwind Twin IntelliSense
-
-### index.tsx
-
-```tsx
-import type { NextPage } from "next";
-import styled from "styled-components";
-import tw from "twin.macro";
-
-const StyledTitle = styled.h1`
-  color: red;
-  background-color: blue;
-  font-size: 3rem;
-  padding: 0;
-`;
-
-const TailwindStylesTitle = tw.h1`
-  bg-green-500 text-yellow-500 text-5xl
-`;
-
-const Home: NextPage = () => {
-  return (
-    <div className="w-screen h-screen flex items-center justify-center flex-col gap-4">
-      <h1 className="text-5xl bg-black text-white">Hello Tailwind</h1>
-      <StyledTitle>Hello Styled-component</StyledTitle>
-      <TailwindStylesTitle>Hello Twin Macro</TailwindStylesTitle>
-    </div>
-  );
-};
-
-export default Home;
-```
-
-### twin.d.ts
-
-```ts
-import "twin.macro";
-import styledImport, { CSSProp, css as cssImport } from "styled-components";
-
-declare module "twin.macro" {
-  // The styled and css imports
-  const styled: typeof styledImport;
-  const css: typeof cssImport;
-}
-
-declare module "react" {
-  // The css prop
-  interface HTMLAttributes<T> extends DOMAttributes<T> {
-    css?: CSSProp;
-    tw?: string;
-  }
-  // The inline svg css prop
-  interface SVGProps<T> extends SVGProps<SVGSVGElement> {
-    css?: CSSProp;
-    tw?: string;
-  }
-}
-
-// The 'as' prop on styled components
-declare global {
-  namespace JSX {
-    interface IntrinsicAttributes<T> extends DOMAttributes<T> {
-      as?: string | Element;
-    }
-  }
-}
-```
-
-### tsconfig.json
-
-```json
-{
-  "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "twin.d.ts"],
-  "exclude": ["node_modules"]
-}
-```
-
-### index.tsx
-
-```tsx
-import type { NextPage } from "next";
-import tw, { styled } from "twin.macro";
-
-const StyledTitle = styled.h1`
-  color: red;
-  background-color: blue;
-  font-size: 3rem;
-  padding: 0;
-`;
-
-const TailwindStylesTitle = tw.h1`
-  bg-green-500 text-yellow-500 text-5xl
-`;
-
-const ConditionalTW = styled.div<{ isRed: boolean }>`
-  ${tw`text-white
-    font-bold
-    py-2
-    px-4
-    border
-    border-black
-    rounded`}
-  ${({ isRed }) =>
-    isRed
-      ? tw`bg-red-500 hover:bg-red-700`
-      : tw`bg-blue-500 hover:bg-blue-500`};
-`;
-
-const Home: NextPage = () => {
-  return (
-    <div className="w-screen h-screen flex items-center justify-center flex-col gap-4">
-      <h1 className="text-5xl bg-black text-white">Hello Tailwind</h1>
-      <StyledTitle>Hello Styled-component</StyledTitle>
-      <TailwindStylesTitle>Hello Twin Macro</TailwindStylesTitle>
-      <ConditionalTW isRed={true}>Conticional TW</ConditionalTW>
-    </div>
-  );
-};
-
-export default Home;
-```
-
-# 6.Update ESLint config
+# 4.Update ESLint config
 
 ### Add eslint-plutin-tailwind
 
@@ -323,7 +63,7 @@ npm i -D eslint-plugin-tailwindcss
 }
 ```
 
-# 7. Install Prettier
+# 5. Install Prettier
 
 ### Install Prettier
 
@@ -367,7 +107,7 @@ npm i -D eslint-config-prettier
 }
 ```
 
-# 8. Add Ignore files
+# 6. Add Ignore files
 
 ### Install VSCode extensions: ESLint, Prettier
 
@@ -393,7 +133,7 @@ package-lock.json
 public
 ```
 
-# 9. Update editor config
+# 7. Update editor config
 
 ### Add .vscode/settings.json
 
@@ -409,7 +149,7 @@ public
 }
 ```
 
-# 10. Setup Husk
+# 8. Setup Husk
 
 ### Install & Init husky
 
